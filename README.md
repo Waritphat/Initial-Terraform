@@ -1,69 +1,89 @@
 # Initial-Terraform
 
-## Prepain Environment
- #### สร้าง User บน IAM
- - ไปที่ AWS Management Console
- - เลือก IAM ภายใต้ Security, Identity & Compliacne
- - สร้าง User ใหม่บน IAM และตั้งค่าสิทธิ์ให้ User
+## การเตรียมสภาพแวดล้อม (Prepare Environment)
 
-#### สร้าง Access Key
- - เลือก User ที่ต้องการสร้าง Access Key
- - ไปที่แท็บ Security Credentials
- - กดปุ่ม Create accress key
- - เลือก Use case → เลือก Command Line Interface (CLI) แล้วกด Next
- - กดยืนยัน แล้วกด Create access key
+### 1. การสร้าง IAM User
+1. ไปที่ **AWS Management Console**
+2. เลือก **IAM** ภายใต้หมวด **Security, Identity & Compliance**
+3. สร้าง **User ใหม่** พร้อมกำหนดสิทธิ์การเข้าถึงตามความเหมาะสม
 
- **สำคัญ! Copy ค่า Access Key ID และ Secret Access Key แล้วบันทึกไว้ เพราะจะดูได้แค่ครั้งเดียว**
- 
-#### การสร้าง Permission สำหรับเข้าถึง SQS & SNS
- - ไปที่ AWS Managerment Console
- - เลือก IAM ภายใต้ Security, Identity & Compliacne
- - เลือก Role
- - กดปุ่ม Create Role 
- - ใส่ชื่อ Role และเลือก Entity Type
- - เพิ่ม Permission AmazonSQSFullAccess และ AmazonSQNFullAccess ให้ User
- - กด Create Role
+### 2. การสร้าง Access Key
+1. เลือก **IAM User** ที่ต้องการสร้าง **Access Key**
+2. ไปที่แท็บ **Security Credentials**
+3. คลิก **Create access key**
+4. ในส่วน **Use case** ให้เลือก **Command Line Interface (CLI)** จากนั้นกด **Next**
+5. ยืนยันการสร้าง และคลิก **Create access key**
+6. **สำคัญ!** คัดลอก **Access Key ID** และ **Secret Access Key** เก็บไว้ เนื่องจากระบบจะแสดงข้อมูลนี้เพียงครั้งเดียว
 
-#### การเพิ่ม User ให้ Role ที่ใช้สำหรับเข้าถึง SQS & SNS
- - ไปที่ Role ที่สร้างไว้
- - เลือก User
- - กด Add User และเพิ่ม User ที่ต้องการ
+### 3. การกำหนดสิทธิ์ (Permission) สำหรับการเข้าถึง SQS และ SNS
+1. ไปที่ **AWS Management Console**
+2. เลือก **IAM** ภายใต้หมวด **Security, Identity & Compliance**
+3. เลือก **Roles** และคลิก **Create Role**
+4. ตั้งชื่อ Role และเลือก **Entity Type** ตามการใช้งาน
+5. เพิ่มสิทธิ์ (`Permissions`) โดยเลือก **AmazonSQSFullAccess** และ **AmazonSNSFullAccess**
+6. คลิก **Create Role**
 
-## Install Terraform & CLI
+### 4. การเพิ่ม User ให้กับ Role ที่ใช้สำหรับ SQS และ SNS
+1. ไปที่ **Roles** ที่สร้างไว้
+2. เลือกแท็บ **Users**
+3. คลิก **Add User** และเลือก User ที่ต้องการเพิ่มเข้าไปใน Role
 
-### On Windows [Reference](https://docs.oracle.com/en/solutions/infrastructure-components-to-deploy-peoplesoft/ebs-configuring-terraform-windows-systems.html#GUID-6DD1EC34-3052-45C1-8196-7F07C47ACD74)
- 
-  #### Download Terraform
-  - [Download Terraform](https://developer.hashicorp.com/terraform/install#windows) โดย *386 สำหรับ Windows 32 and amd64 สำหรับ Windows 64*
-  - สร้าง folder แล้ว นำไฟล์ที่ download ไปวาง
-  - แตกไฟล์ที่ dowload มา
+---
 
-  #### Set Environment
-  - กดปุ่ม Windows แล้วค้นหา Environment แล้วเลือก Edit the system Environment Variables
-  - เลือก Environment Variables
-  - ในหัวข้อ System Variables : เลือกที่ Path แล้วนำ address path ของ folder ที่แตก Terraform ไฟล์ไว้ไปใส่
- 
-  #### Download AWS CLI
-  - [Download AWS CLI](https://awscli.amazonaws.com/AWSCLIV2.msi)
-  - ติดตั้ง AWS CLI
-  - ตรวจสอบว่า Install สำเร็จ โดยการรัน ```aws --version```
+## การติดตั้ง Terraform และ AWS CLI
 
-### On macOS [Reference](https://docs.oracle.com/en/solutions/infrastructure-components-to-deploy-peoplesoft/ebs-configuring-terraform-unix-systems.html#GUID-79356933-676C-427A-ACEE-8F49E634011A)
- 
-  #### Download Terraform
+### สำหรับ Windows  
+📌 **อ้างอิง**: [Oracle Docs](https://docs.oracle.com/en/solutions/infrastructure-components-to-deploy-peoplesoft/ebs-configuring-terraform-windows-systems.html#GUID-6DD1EC34-3052-45C1-8196-7F07C47ACD74)
+
+#### 1. ดาวน์โหลดและติดตั้ง Terraform
+1. ดาวน์โหลด Terraform จากเว็บไซต์ทางการ: [Download Terraform](https://developer.hashicorp.com/terraform/install#windows)  
+   - เลือก **386** สำหรับ **Windows 32-bit** หรือ **amd64** สำหรับ **Windows 64-bit**
+2. สร้างโฟลเดอร์สำหรับเก็บไฟล์ Terraform
+3. แตกไฟล์ (`.zip`) ที่ดาวน์โหลดมา และย้ายไปยังโฟลเดอร์ที่สร้างไว้
+
+#### 2. ตั้งค่า Environment Variables
+1. กดปุ่ม **Windows** แล้วค้นหา **Environment Variables**
+2. เลือก **Edit the system environment variables**
+3. ในหน้าต่าง **System Properties** คลิก **Environment Variables**
+4. เลื่อนลงไปที่ **System Variables** และเลือก **Path**
+5. คลิก **Edit** และเพิ่ม **ที่อยู่โฟลเดอร์ของ Terraform** ลงไป
+
+#### 3. ดาวน์โหลดและติดตั้ง AWS CLI
+1. ดาวน์โหลด AWS CLI: [Download AWS CLI](https://awscli.amazonaws.com/AWSCLIV2.msi)
+2. ติดตั้ง AWS CLI โดยทำตามขั้นตอนที่ระบบแนะนำ
+3. ตรวจสอบการติดตั้งโดยรันคำสั่ง
+   ```sh
+   aws --version
+   ```
+
+---
+
+### สำหรับ macOS  
+📌 **อ้างอิง**: [Oracle Docs](https://docs.oracle.com/en/solutions/infrastructure-components-to-deploy-peoplesoft/ebs-configuring-terraform-unix-systems.html#GUID-79356933-676C-427A-ACEE-8F49E634011A)
+
+#### 1. ดาวน์โหลดและติดตั้ง Terraform
+ใช้คำสั่งด้านล่างเพื่อติดตั้ง Terraform ผ่าน Homebrew:  
+```sh
+brew tap hashicorp/tap  
+brew install hashicorp/tap/terraform  
 ```
-brew tap hashicorp/tap
-brew install hashicorp/tap/terraform
-```
 
-  #### Download AWS CLI
-  - [Download AWS CLI](https://awscli.amazonaws.com/AWSCLIV2.pkg)
-  - ติดตั้ง AWS CLI
-  - ตรวจสอบว่า Install สำเร็จ โดยการรัน ```aws --version```
+#### 2. ดาวน์โหลดและติดตั้ง AWS CLI
+1. ดาวน์โหลด AWS CLI: [Download AWS CLI](https://awscli.amazonaws.com/AWSCLIV2.pkg)
+2. ติดตั้ง AWS CLI ตามขั้นตอนที่ระบบแนะนำ
+3. ตรวจสอบการติดตั้งโดยรันคำสั่ง
+   ```sh
+   aws --version
+   ```
 
-  #### Setup AWS CLI
-  - เปิด Terminal หรือ iTerm
-  - run ```aws configure```
-  - ใส่ Access Key ID (จาก IAM)
-  - ใส่ Secret Access Key (จาก IAM)
-  
+#### 3. ตั้งค่า AWS CLI
+1. เปิด **Terminal** หรือ **iTerm**
+2. รันคำสั่ง
+   ```sh
+   aws configure
+   ```  
+3. กรอก **Access Key ID** และ **Secret Access Key** ที่ได้จาก IAM
+4. กำหนด **Default region name** (เช่น `us-east-1`, `ap-southeast-1`)
+5. ตั้งค่า **Output format** (ค่าเริ่มต้นเป็น `json` หรือเลือก `table`, `text`)
+
+---
