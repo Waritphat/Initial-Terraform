@@ -21,10 +21,10 @@ Install Terraform
     -  output.tf : ไฟล์สำหรับกำหนดค่าที่ส่งออกไปใช้งาน
 
   Generate SSH Key
-    - เปิด Command prompt แล้ว run ```ssh-keygen -t rsa -N "" -b 2048 -C "<key_name>"``` **เปลี่ยน <key_name> เป็นชื่อ key**
-    - -t คือ Algorithm สำหรับ gen key
-    - -N คือ passphrase ที่จะสร้าง
-    - -b จำนวน Bit ของ Key แนะนำให้ 2048 ขึ้นไป
+  - เปิด Command prompt แล้ว run ```ssh-keygen -t rsa -N "" -b 2048 -C "<key_name>"``` **เปลี่ยน <key_name> เป็นชื่อ key**
+  - -t คือ Algorithm สำหรับ gen key
+  - -N คือ passphrase ที่จะสร้าง
+  - -b จำนวน Bit ของ Key แนะนำให้ 2048 ขึ้นไป
       
   Terraform Module Example: https://github.com/hashicorp-education/learn-terraform-modules-create.git
 
