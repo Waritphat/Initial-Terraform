@@ -198,7 +198,16 @@ provider "aws" {
 }
 ```
 4. สร้างไฟล์ `version.tf`
-
+```sh
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.34"
+    }
+  }
+}
+```
 5. สร้างไฟล์ `main.tf` และเพิ่มข้อมูลดังนี้
 ```sh
 #main.tf
@@ -388,24 +397,145 @@ sqs_dlqs = [
 
 #### การ Config ไฟล์ `terraform.auto.tfvars`
 1. Environment และ Project Configurations
-   - `environment_stage` : ใช้ระบุการติดตั้งโครงสร้างพื้นฐาน `example : stg,sit,uat,preprod,prod`
-   - `project_chn` : หมายเลขที่ใช้ระบุโครงการภายในองค์กร
-   - `project_name` : ชื่อโปรเจกต์ที่จะใช้สร้างทรัพยากร
-   - `aws_region` : โซนที่ตั้งของ AWS Service `example : ap-southeast-1`
-   - `aws_account_id` : กำหนด ID ของบัญชี AWS ที่ใช้ `example : 806386304719`
-  
-2. SNS Config
+   | Parameter | Description |
+   |------------------|--------------------------|
+   | `environment_stage` | ใช้ระบุการติดตั้งโครงสร้างพื้นฐาน `example : stg,sit,uat,preprod,prod` |
+   | `project_chn` | หมายเลขที่ใช้ระบุโครงการภายในองค์กร |
+   | `project_name` | ชื่อโปรเจกต์ที่จะใช้สร้างทรัพยากร |
+   | `aws_region` | โซนที่ตั้งของ AWS Service `example : ap-southeast-1` |
+   | `aws_account_id` | กำหนด ID ของบัญชี AWS ที่ใช้ `example : 806386304719` |
+
+   Example
+   ```sh
+   environment_stage = ""   # Define environment for provisioning example stg,sit,uat,preprod,prod
+   project_chn       = "" # CHN number for TLI service request
+   project_name      = ""
+   
+   aws_region = "ap-southeast-1"
+   aws_account_id               = "" # AWS account id which is target of provisioning , example 806386304719
+   ```
+3. SNS Config
 
    2.1 sns_platform_applications `List<Object>` : ใช้สำหรับกำหนดค่าการเชื่อมต่อ AWS SNS กับบริการ Push Notifications
-      - `platform_applications_name` : กำหนดชื่อของ SNS Application ที่จะใช้
-      - `platform_credential` : ใช้กำหนดค่าการรับรองความถูกต้องของ Firebase (JSON Key)
-      - `success_feedback_sample_rate` : ค่าเปอร์เซ็นต์ที่ใช้กำหนดอัตราส่วนของ Feedback ที่จะได้รับจาก SNS `example : 100` (หมายถึงได้รับทุกข้อความ)
-   
+      | Parameter | Description |
+      |------------------|--------------------------|
+      | `platform_applications_name` | กำหนดชื่อของ SNS Application ที่จะใช้ |
+      | `platform_credential` | ใช้กำหนดค่าการรับรองความถูกต้องของ Firebase (JSON Key) |
+      | `success_feedback_sample_rate` | ค่าเปอร์เซ็นต์ที่ใช้กำหนดอัตราส่วนของ Feedback ที่จะได้รับจาก SNS `example : 100` (หมายถึงได้รับทุกข้อความ) |
+
+      Example
+      ```sh
+      sns_platform_applications = [
+         {
+          platform_applications_name = "ms-notification"
+          platform_credential        = <<EOF
+            {
+             "type": "service_account",
+             "project_id": "project-example-dev",
+             "private_key_id": "867730b2d27a8e531d24d23b7048768adgg11ji0",
+             "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCgqARyU/yTS/RZ\n66WXAYmzXBo4u+qljwwnfZKFZ4HXit/kOBx0RLQRL26s+jH7NCpnCtJPPGDpl7fV\nvmIOYQj6gcrFanhL0xY+IHkc7bhoDaxO5mLBAsw4uZ7ZZNQmhEuQMknF7BFoR+TF\nusJcprOS6WHVVmPUGuYqOHdSEQ22RaGLxlBM9lfqFmzUle4bpQk8Ir/Y2WcHEMaI\njm532SlmMYHgUlEC0WmlxfOFVlYxMvh4OZ5DOsZp20sDXUsUkqj3l0i3yyCsU81J\nmbq3vBsRV1f5HYrJwMn9v+EuBxjl9T8SGLn7N3SYsQj8yZsjepOudc7ktI/lEUNV\nbI4wW3FfAgMBAAECggEAJHqiL9eUNVn8zOIuAmDOBJT4O0OoHxmhF+Jyf6omGGwn\nNGntRBVJkdFkXxCcgr6wlh8l6+n403Gow3bsSvmLkV4hTbxEPmta1JaJCaGMysu4\nAV5ctBjPiF3VjOVRKsHFaqOQjslwlm4kqyUh9um/Qq+NkGSCXGoTMykJJvBKXcWL\nlll/pbQeqa+tSHVkK2ikJLkL7uYt+SEca25fKIuytd5sazm0i2sHeB0NCfwyhxQ\nvNUSr3tezX1Gb61ToNOV5yt+4pYLp5s3prtWEu1pteulLB6eLJJiNy3uYElnwh2p\n/ULs9SEZ0vlsFOFX4iF+Pk6Kjm59Q+EqNJNz5ByMCQKBgQDVX/KTqikt/Qm80jOP\n8UYz8FilfSpc/KsRnc3mWku89ljTzf30aL5GxFh7nMpGU1i1xoCsTomiGI5vJU5h\nIzdzn6u2hgY9Mnc5PzPmxQLeV1l2O/MU9DO+0FexA5LevDPNh+3XhGh5OR0gOfZC\n+H8J5MPGsSTQqYG7/gTLAInyJQKBgQDAwAfcyP8UvCtpsp5uL2E7bMO+ZByBRfHo\nXpaN9BCbTajw0ihLz6OnoLd9/OD13yzoNAFPUzAYnzHZ6DZSLIxyzBp3RSQalWxb\nlK1GoxCMpYfz4AXmB6MM1h2ewtfd9mWg5rjOirqQBkE63c9bet4Ue6pp1Gj+WDsc\ng6zF/5ckMwKBgFaVorftGtzAi40Ft0q324cEBtTQn7owBbMWWBEbnxRE2vLH6j+d\nqWjKECXJEAPNmnfY3yoMjKksUdAkUVP1mHDg4Csm4609p0ehsAv68hkLVRA3b4KX\nPdA2dv8rthOQR20ltYv4/PQECx+ipZ2zfMmk/RTJmWja//wrLgK6az/JAoGAR/Zp\n+RBBy+gE/U1mwRSHZLxSyH5v9gO7MVo/M3hvysvPyzlrOgKnwynJ2AvVoXZVOcxQ\nwOD6D/c/kW+U+FERjrqNFwKFXDd1YSu9FaZDw375px94lE09nslB/cgY+BHKF6yM\nSvCYfrUXHXc6t5jD2Tnigeh/2pXuW9L9al7meukCgYEAhRm8F2XxBJQBs9bDziHe\nW5+MIK5U9jmIUqVwcLybSSX2ABriBnExwbCKDRyLi4o5DcmDXVD5Y3sDG9nLi9u8\nAcEL6djrmjSvDuh0z1waX11+QOkyjKk4VFnB0rTiOVKj/IzZZoQatxWiO1ESpHsk\nMUS88RHwDRA0cq3rv6Ssr3o=\n-----END PRIVATE KEY-----\n",
+             "client_email": "firebase-adminsdk-x4ocf@project-example-dev.iam.gserviceaccount.com",
+             "client_id": "108474086456716402281",
+             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+             "token_uri": "https://oauth2.googleapis.com/token",
+             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+             "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-x4ocf%project-example-dev.iam.gserviceaccount.com",
+             "authDomain": "project-example-dev.firebaseapp.com",
+             "projectId": "project-example-dev",
+             "storageBucket": "project-example-dev.appspot.com",
+             "messagingSenderId": "18563310883",
+             "appId": "1:18563310883:web:faa3854d0dd8bb1uyt5556",
+             "measurementId": "G-JX9M4EHLH0",
+             "universe_domain": "googleapis.com"
+            }
+      EOF
+          success_feedback_sample_rate = 100
+         }
+      ]
+      ```
+      
    2.2 sns_topics `List<Object>` : ใช้สำหรับการส่งข้อความแจ้งเตือนผ่าน AWS SNS
-      - `name` เป็นจุดรับข้อความที่ผู้ใช้สามารถสมัครรับข้อมูลได้
+      | Parameter | Description |
+      |------------------|--------------------------|
+      | `name` | เป็นจุดรับข้อความที่ผู้ใช้สามารถสมัครรับข้อมูลได้ |
+   
+      Example
+      ```sh
+      sns_topics = [
+        {
+          name = "company-news"
+        },
+        {
+          name = "customer"
+        },
+        {
+          name = "self-recruitment"
+        },
+        {
+          name = "team-recruitment"
+        }
+      ]
+      ```
   
-4. SNQ Config
+4. SQS Config
 
    3.1 sqs_queues `List<Object>` : ใช้สำหรับกำหนดค่า คิวข้อความ เพื่อรับและประมวลผลข้อความ
+   | Parameter | Description |
+   |------------------|--------------------------|
+   | `queue_name` | ชื่อของ SQS Queue |
+   | `delay_seconds` | เวลาในการหน่วงข้อความก่อนจะสามารถดึงไปใช้งานได้ (0 = ไม่มีหน่วง) |
+   | `max_message_size` | ขนาดสูงสุดของข้อความที่สามารถส่งได้ (หน่วยเป็น Bytes, ค่าเริ่มต้น 256 KB) |
+   | `message_retention_seconds` | เวลาที่ข้อความสามารถเก็บอยู่ในคิวได้ (สูงสุด 14 วัน) |
+   | `receive_wait_time_seconds` | ใช้กำหนดค่าระยะเวลารอรับข้อความ (0 = ไม่ต้องรอ) |
+   | `visibility_timeout_seconds` | เวลาที่ข้อความจะถูกซ่อนหลังจากมีคนดึงไปใช้งาน (ช่วยป้องกันการอ่านซ้ำ) |
+   | `fifo_queue` | กำหนดว่าคิวเป็น FIFO (First-In-First-Out) หรือไม่ |
+   | `redrive_policy_enable` | เปิดใช้งาน Dead-letter Queue หรือไม่ |
+   | `redrive_policy_dead_letter_target_arn` | ARN ของ Dead-letter Queue ที่ใช้เมื่อข้อความเกิดข้อผิดพลาด |
+   | `redrive_policy_max_receive_count` | จำนวนครั้งที่อนุญาตให้รับข้อความก่อนที่จะย้ายไปยัง DLQ |
+   
+   Example
+   ```sh
+      sqs_queues = [
+        {
+          queue_name                 = "ms-notification.fifo"
+          delay_seconds              = 0
+          max_message_size           = 262144
+          message_retention_seconds  = 1209600
+          receive_wait_time_seconds  = 0
+          visibility_timeout_seconds = 30
+          fifo_queue = true
+      
+          redrive_policy_enable = false
+        },
+        {
+          queue_name                 = "ms-push-notification.fifo"
+          delay_seconds              = 0
+          max_message_size           = 262144
+          message_retention_seconds  = 604800
+          receive_wait_time_seconds  = 0
+          visibility_timeout_seconds = 30
+          fifo_queue = true
+      
+          redrive_policy_enable = true
+          redrive_policy_dead_letter_target_arn = "ms-push-notification-dlq.fifo"
+          redrive_policy_max_receive_count = 5
+        }
+      ]
+   ```
    
    3.2 sqs_dlqs `List<Object>` : ใช้สำหรับกำหนด Dead Letter Queue เพื่อเก็บข้อความที่ล้มเหลว
+   
+   Example
+   ```sh
+   sqs_dlqs = [
+     {
+       queue_name                 = "ms-push-notification-dlq.fifo"
+       delay_seconds              = 0
+       max_message_size           = 262144
+       message_retention_seconds  = 1209600
+       receive_wait_time_seconds  = 0
+       visibility_timeout_seconds = 30
+       fifo_queue = true
+     }
+   ]
+   ```
