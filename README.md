@@ -294,12 +294,12 @@ module "sqs_dlqs" {
 ```sh
 #terraform.auto.tfvars
 
-environment_stage = ""   # Define environment for provisioning example stg,sit,uat,preprod,prod
-project_chn       = "" # CHN number for TLI service request
-project_name      = ""
+environment_stage = "sit"   # Define environment for provisioning example stg,sit,uat,preprod,prod
+project_chn       = "25628" # CHN number for TLI service request
+project_name      = "ASA"
 
 aws_region = "ap-southeast-1"
-aws_account_id               = "" # AWS account id which is target of provisioning , example 806386304719
+aws_account_id               = "806386304711" # AWS account id which is target of provisioning , example 806386304719
 #ecs_task_execution_role_name = "" # example ecsTaskExecutionRole
 
 ########################################
@@ -407,12 +407,12 @@ sqs_dlqs = [
 
    Example
    ```sh
-   environment_stage = ""   # Define environment for provisioning example stg,sit,uat,preprod,prod
-   project_chn       = "" # CHN number for TLI service request
-   project_name      = ""
+   environment_stage = "sit"   # Define environment for provisioning example stg,sit,uat,preprod,prod
+   project_chn       = "25628" # CHN number for TLI service request
+   project_name      = "ASA"
    
    aws_region = "ap-southeast-1"
-   aws_account_id               = "" # AWS account id which is target of provisioning , example 806386304719
+   aws_account_id               = "806386304711" # AWS account id which is target of provisioning , example 806386304719
    ```
 3. SNS Config
 
